@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -7,541 +7,857 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="PhoneOS">
 <title>PhoneOS</title>
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.0.0/tabler-icons.min.css">
 <style>
-*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
-:root{
-  --bg:#0d0d1a;
-  --surface:rgba(255,255,255,0.08);
-  --surface2:rgba(255,255,255,0.14);
-  --border:rgba(255,255,255,0.12);
-  --text:#f0f0f5;
-  --text2:rgba(240,240,245,0.55);
-  --accent:#7c6fff;
-  --accent2:#4ecdc4;
-  --red:#ff5f57;
-  --font:-apple-system,BlinkMacSystemFont,'SF Pro Display','Segoe UI',sans-serif;
-  --mono:'SF Mono','Fira Code','Courier New',monospace;
-}
-html,body{width:100%;height:100%;overflow:hidden;font-family:var(--font);background:var(--bg);color:var(--text);}
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --bg: #0d0d1a;
+    --surface: rgba(255,255,255,0.07);
+    --surface2: rgba(255,255,255,0.12);
+    --border: rgba(255,255,255,0.12);
+    --text: #f0f0f5;
+    --text2: rgba(240,240,245,0.6);
+    --accent: #7c6fff;
+    --accent2: #4ecdc4;
+    --green: #28c840;
+    --red: #ff5f57;
+    --yellow: #ffbd2e;
+    --win-bg: #13131f;
+    --win-bar: #1a1a2e;
+    --input-bg: rgba(255,255,255,0.06);
+    --radius: 14px;
+    --font: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', sans-serif;
+    --mono: 'SF Mono', 'Fira Code', 'Courier New', monospace;
+  }
 
-/* ── Wallpaper ── */
-#wp{position:fixed;inset:0;z-index:0;
-  background:
-    radial-gradient(ellipse 70% 50% at 15% 10%,rgba(124,111,255,.4) 0%,transparent 65%),
-    radial-gradient(ellipse 60% 60% at 90% 85%,rgba(78,205,196,.3) 0%,transparent 65%),
-    radial-gradient(ellipse 50% 40% at 60% 40%,rgba(252,60,68,.15) 0%,transparent 60%),
-    #0d0d1a;}
+  body {
+    font-family: var(--font);
+    background: var(--bg);
+    overflow: hidden;
+    width: 100vw; height: 100vh;
+    color: var(--text);
+    position: relative;
+  }
 
-/* ── Status bar ── */
-#status{position:fixed;top:0;left:0;right:0;z-index:200;
-  height:44px;display:flex;align-items:center;justify-content:space-between;
-  padding:0 20px;
-  background:rgba(13,13,26,0.5);
-  backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);}
-#status-time{font-size:15px;font-weight:600;color:var(--text);}
-#status-icons{display:flex;align-items:center;gap:6px;font-size:14px;color:var(--text);}
+  /* â”€â”€ Wallpaper â”€â”€ */
+  #wallpaper {
+    position: fixed; inset: 0; z-index: 0;
+    background:
+      radial-gradient(ellipse 60% 50% at 20% 10%, rgba(124,111,255,0.35) 0%, transparent 70%),
+      radial-gradient(ellipse 50% 60% at 85% 80%, rgba(78,205,196,0.25) 0%, transparent 70%),
+      radial-gradient(ellipse 40% 40% at 60% 30%, rgba(255,95,87,0.12) 0%, transparent 60%),
+      #0d0d1a;
+  }
 
-/* ── Home screen ── */
-#home{position:fixed;inset:0;z-index:1;padding:54px 0 160px;overflow:hidden;}
-#app-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:24px 12px;padding:24px 16px;}
-.app-icon{display:flex;flex-direction:column;align-items:center;gap:8px;cursor:pointer;}
-.icon-shell{width:68px;height:68px;border-radius:18px;
-  display:flex;align-items:center;justify-content:center;font-size:30px;
-  border:0.5px solid rgba(255,255,255,0.1);
-  transition:transform .12s ease,opacity .12s;}
-.app-icon:active .icon-shell{transform:scale(0.85);opacity:0.75;}
-.icon-label{font-size:12px;color:#fff;text-align:center;font-weight:500;
-  text-shadow:0 1px 4px rgba(0,0,0,.8);letter-spacing:.01em;}
+  /* â”€â”€ Desktop â”€â”€ */
+  #desktop {
+    position: fixed; inset: 0; z-index: 1;
+  }
 
-/* ── Dock ── */
-#dock{position:fixed;bottom:0;left:0;right:0;z-index:200;
-  padding:12px 20px 28px;
-  background:rgba(13,13,26,0.65);
-  backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);
-  border-top:0.5px solid var(--border);}
-#dock-inner{display:flex;justify-content:space-around;align-items:center;}
-.dock-icon{display:flex;flex-direction:column;align-items:center;gap:6px;cursor:pointer;}
-.dock-shell{width:56px;height:56px;border-radius:16px;
-  display:flex;align-items:center;justify-content:center;font-size:26px;
-  border:0.5px solid rgba(255,255,255,0.1);}
-.dock-icon:active .dock-shell{transform:scale(0.85);opacity:0.75;}
-.dock-label{font-size:10px;color:rgba(255,255,255,.7);font-weight:500;}
+  /* â”€â”€ App Icons Grid â”€â”€ */
+  #icon-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 18px;
+    padding: 28px 20px;
+    max-width: 380px;
+    position: absolute; top: 0; left: 0;
+  }
+  .app-icon {
+    display: flex; flex-direction: column; align-items: center; gap: 7px;
+    cursor: pointer; -webkit-tap-highlight-color: transparent;
+  }
+  .icon-shell {
+    width: 58px; height: 58px; border-radius: 16px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 26px; border: 0.5px solid rgba(255,255,255,0.1);
+    transition: transform 0.12s ease, opacity 0.12s ease;
+    position: relative; overflow: hidden;
+  }
+  .icon-shell::after {
+    content: ''; position: absolute; inset: 0;
+    background: rgba(255,255,255,0.08);
+    opacity: 0; transition: opacity 0.1s;
+  }
+  .app-icon:active .icon-shell { transform: scale(0.88); opacity: 0.8; }
+  .icon-label {
+    font-size: 11px; color: #fff; text-align: center;
+    text-shadow: 0 1px 4px rgba(0,0,0,0.7); font-weight: 500;
+    letter-spacing: 0.01em;
+  }
 
-/* ── Full-screen App ── */
-#app-screen{position:fixed;inset:0;z-index:300;display:none;flex-direction:column;
-  background:var(--bg);transform:translateY(100%);transition:transform .32s cubic-bezier(.4,0,.2,1);}
-#app-screen.open{display:flex;transform:translateY(0);}
-#app-header{height:56px;display:flex;align-items:center;padding:0 16px;gap:12px;flex-shrink:0;
-  background:rgba(13,13,26,0.8);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
-  border-bottom:0.5px solid var(--border);}
-#back-btn{width:36px;height:36px;border-radius:50%;background:var(--surface);
-  border:0.5px solid var(--border);display:flex;align-items:center;justify-content:center;
-  cursor:pointer;font-size:18px;color:var(--text);flex-shrink:0;}
-#back-btn:active{background:var(--surface2);}
-#app-title{font-size:16px;font-weight:600;flex:1;}
-#app-content{flex:1;overflow:hidden;display:flex;flex-direction:column;}
+  /* â”€â”€ Taskbar â”€â”€ */
+  #taskbar {
+    position: fixed; bottom: 0; left: 0; right: 0; z-index: 100;
+    height: 72px; display: flex; align-items: center;
+    padding: 0 16px 8px;
+    background: rgba(13,13,26,0.7);
+    backdrop-filter: blur(20px) saturate(1.5);
+    -webkit-backdrop-filter: blur(20px) saturate(1.5);
+    border-top: 0.5px solid var(--border);
+  }
+  #taskbar-inner {
+    display: flex; align-items: center; gap: 6px; flex: 1; overflow-x: auto;
+  }
+  #taskbar-inner::-webkit-scrollbar { display: none; }
+  .tb-app {
+    display: flex; align-items: center; gap: 6px;
+    padding: 6px 11px; border-radius: 10px;
+    background: var(--surface); border: 0.5px solid var(--border);
+    color: var(--text); font-size: 12px; cursor: pointer;
+    white-space: nowrap; transition: background 0.1s;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .tb-app:active { background: var(--surface2); }
+  .ui-icon { display: inline-flex; align-items: center; justify-content: center; line-height: 1; color: currentColor; font-style: normal; flex-shrink: 0; }
+  .ui-icon svg { width: 1em; height: 1em; display: block; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+  .ui-icon.fill svg { fill: currentColor; stroke: none; }
+  .emoji-icon { font-family: -apple-system, BlinkMacSystemFont, 'Apple Color Emoji', 'Segoe UI Emoji', sans-serif; font-size: 1em; line-height: 1; font-weight: 600; }
+  .icon-shell .ui-icon { font-size: 28px; color: #fff; }
+  .tb-app .ui-icon { font-size: 15px; }
+  #tb-clock {
+    margin-left: auto; font-size: 13px; font-weight: 600;
+    color: var(--text); white-space: nowrap; padding-left: 10px;
+    flex-shrink: 0;
+  }
 
-/* ── Browser ── */
-#browser-bar{display:flex;align-items:center;gap:8px;padding:10px 14px;
-  background:rgba(13,13,26,0.7);border-bottom:0.5px solid var(--border);flex-shrink:0;}
-#browser-url{flex:1;background:var(--surface);border:0.5px solid var(--border);
-  border-radius:10px;padding:9px 14px;color:var(--text);font-size:14px;
-  outline:none;font-family:var(--font);}
-#browser-url:focus{border-color:var(--accent);}
-#go-btn{background:var(--accent);border:none;color:#fff;border-radius:10px;
-  padding:9px 16px;font-size:14px;cursor:pointer;font-family:var(--font);white-space:nowrap;}
-.bookmarks{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;padding:14px;}
-.bm{display:flex;flex-direction:column;align-items:center;gap:6px;
-  padding:14px 8px;background:var(--surface);border:0.5px solid var(--border);
-  border-radius:14px;cursor:pointer;text-decoration:none;}
-.bm:active{background:var(--surface2);}
-.bm i{font-size:24px;color:var(--accent);}
-.bm span{font-size:11px;color:var(--text2);text-align:center;}
-#browser-open-btn{margin:0 14px;padding:14px;background:var(--accent);border:none;
-  color:#fff;border-radius:12px;font-size:15px;font-family:var(--font);
-  cursor:pointer;width:calc(100% - 28px);}
-#browser-open-btn:active{opacity:.8;}
-#browser-note{padding:0 14px 14px;font-size:12px;color:var(--text2);text-align:center;line-height:1.5;}
+  /* â”€â”€ Windows â”€â”€ */
+  .window {
+    position: absolute;
+    background: var(--win-bg);
+    border-radius: var(--radius);
+    border: 0.5px solid var(--border);
+    display: flex; flex-direction: column;
+    overflow: hidden;
+    min-width: 260px; min-height: 180px;
+    box-shadow: 0 16px 48px rgba(0,0,0,0.6), 0 0 0 0.5px rgba(255,255,255,0.06);
+  }
+  .win-bar {
+    background: var(--win-bar);
+    padding: 10px 12px;
+    display: flex; align-items: center; gap: 8px;
+    border-bottom: 0.5px solid var(--border);
+    cursor: move; flex-shrink: 0;
+    touch-action: none;
+  }
+  .win-dots { display: flex; gap: 6px; }
+  .wdot {
+    width: 12px; height: 12px; border-radius: 50%; cursor: pointer;
+    border: none; transition: opacity 0.1s;
+  }
+  .wdot:active { opacity: 0.7; }
+  .win-title { font-size: 13px; font-weight: 500; color: var(--text); flex: 1; }
+  .win-body { flex: 1; overflow: hidden; display: flex; flex-direction: column; }
+  .resize-h {
+    position: absolute; bottom: 0; right: 0;
+    width: 20px; height: 20px; cursor: nwse-resize;
+    touch-action: none;
+  }
+  .resize-h::after {
+    content: '';
+    position: absolute; bottom: 4px; right: 4px;
+    width: 8px; height: 8px;
+    border-right: 2px solid var(--border);
+    border-bottom: 2px solid var(--border);
+    border-radius: 1px;
+  }
 
-/* ── Files ── */
-.files-wrap{overflow-y:auto;flex:1;padding:8px;}
-.section-label{font-size:11px;color:var(--text2);text-transform:uppercase;letter-spacing:.07em;padding:10px 14px 4px;}
-.file-row{display:flex;align-items:center;gap:12px;padding:13px 14px;
-  border-radius:12px;cursor:pointer;}
-.file-row:active{background:var(--surface);}
-.file-icon{width:40px;height:40px;border-radius:10px;
-  display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;}
-.file-info{flex:1;min-width:0;}
-.file-name{font-size:14px;color:var(--text);font-weight:500;}
-.file-meta{font-size:11px;color:var(--text2);margin-top:1px;}
-.file-arrow{font-size:16px;color:var(--text2);}
+  /* â”€â”€ Browser â”€â”€ */
+  .browser-bar {
+    display: flex; align-items: center; gap: 6px;
+    padding: 8px 10px;
+    background: var(--win-bar);
+    border-bottom: 0.5px solid var(--border);
+    flex-shrink: 0;
+  }
+  .browser-bar input {
+    flex: 1; background: var(--input-bg); border: 0.5px solid var(--border);
+    border-radius: 8px; padding: 6px 10px; color: var(--text);
+    font-size: 12px; outline: none; font-family: var(--font);
+  }
+  .browser-bar input:focus { border-color: var(--accent); }
+  .browser-bar button {
+    background: var(--accent); border: none; color: #fff;
+    border-radius: 8px; padding: 6px 12px; font-size: 12px;
+    cursor: pointer; font-family: var(--font); flex-shrink: 0;
+  }
+  .browser-bar button:active { opacity: 0.8; }
+  .browser-open-panel {
+    flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center;
+    gap: 12px; padding: 24px; text-align: center; color: var(--text2);
+    background: rgba(255,255,255,0.03);
+  }
+  .browser-open-panel .ui-icon { font-size: 42px; color: var(--accent); }
+  .browser-open-panel p { font-size: 13px; line-height: 1.5; max-width: 260px; }
+  #browser-frame {
+    flex: 1; border: none; width: 100%; background: #fff;
+  }
 
-/* ── Terminal ── */
-.term-wrap{flex:1;display:flex;flex-direction:column;overflow:hidden;background:#0a0a10;}
-.term-out{flex:1;overflow-y:auto;padding:14px;font-family:var(--mono);font-size:13px;color:#00ff88;line-height:1.7;}
-.term-line{word-break:break-all;}
-.term-cmd-color{color:var(--accent);}
-.term-err{color:var(--red);}
-.term-bar{display:flex;align-items:center;padding:10px 14px;gap:8px;
-  background:#111118;border-top:0.5px solid var(--border);}
-.term-bar span{color:#00ff88;font-family:var(--mono);font-size:13px;white-space:nowrap;}
-#term-inp{flex:1;background:transparent;border:none;color:#00ff88;
-  font-family:var(--mono);font-size:13px;outline:none;caret-color:#00ff88;}
+  /* â”€â”€ Files â”€â”€ */
+  .files-body { padding: 8px; overflow-y: auto; }
+  .file-row {
+    display: flex; align-items: center; gap: 10px;
+    padding: 9px 10px; border-radius: 9px;
+    cursor: pointer; font-size: 13px; color: var(--text);
+    transition: background 0.1s;
+  }
+  .file-row:hover, .file-row:active { background: var(--surface); }
+  .file-row .ui-icon { font-size: 18px; color: var(--text2); flex-shrink: 0; }
+  .file-row span { flex: 1; }
+  .file-row .file-size { font-size: 11px; color: var(--text2); }
 
-/* ── Notes ── */
-.notes-wrap{flex:1;display:flex;flex-direction:column;padding:14px;gap:10px;}
-#note-title{background:transparent;border:none;color:var(--text);
-  font-size:20px;font-weight:700;font-family:var(--font);outline:none;
-  border-bottom:0.5px solid var(--border);padding-bottom:10px;}
-#note-title::placeholder{color:var(--text2);}
-#note-body{flex:1;background:transparent;border:none;color:var(--text);
-  font-size:15px;font-family:var(--font);resize:none;outline:none;line-height:1.8;}
-#note-body::placeholder{color:var(--text2);}
+  /* â”€â”€ Terminal â”€â”€ */
+  .term-body {
+    background: #0a0a0a; padding: 12px;
+    font-family: var(--mono); font-size: 12.5px;
+    color: #00ff88; flex: 1; overflow-y: auto;
+    line-height: 1.65;
+  }
+  .term-line { margin-bottom: 1px; word-break: break-all; }
+  .term-prompt { color: var(--accent); }
+  .term-error { color: #ff5f57; }
+  .term-input-row { display: flex; align-items: center; gap: 4px; margin-top: 6px; }
+  .term-input-row input {
+    background: transparent; border: none; color: #00ff88;
+    font-family: var(--mono); font-size: 12.5px; outline: none;
+    flex: 1; caret-color: #00ff88;
+  }
 
-/* ── Calculator ── */
-.calc-wrap{flex:1;display:flex;flex-direction:column;padding:16px;gap:12px;}
-#calc-disp{background:var(--surface);border-radius:14px;padding:16px 20px;
-  font-size:36px;font-weight:300;color:var(--text);text-align:right;
-  min-height:72px;word-break:break-all;letter-spacing:-1px;}
-#calc-btns{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;flex:1;}
-.cb{border-radius:14px;border:none;font-size:20px;font-weight:400;
-  cursor:pointer;font-family:var(--font);color:var(--text);
-  background:var(--surface);min-height:64px;
-  display:flex;align-items:center;justify-content:center;}
-.cb:active{opacity:.6;}
-.cb.op{background:var(--accent);color:#fff;}
-.cb.fn{background:var(--surface2);}
-.cb.eq{background:var(--accent2);color:#0d0d1a;}
-.cb.zero{grid-column:span 2;border-radius:32px;justify-content:flex-start;padding-left:24px;}
+  /* â”€â”€ Notes â”€â”€ */
+  .notes-body {
+    display: flex; flex-direction: column; flex: 1;
+    padding: 12px; gap: 8px;
+  }
+  .notes-title {
+    background: transparent; border: none;
+    color: var(--text); font-size: 15px; font-weight: 600;
+    font-family: var(--font); outline: none;
+    border-bottom: 0.5px solid var(--border); padding-bottom: 8px;
+  }
+  .notes-area {
+    flex: 1; background: transparent; border: none;
+    color: var(--text); font-size: 13px; font-family: var(--font);
+    resize: none; outline: none; line-height: 1.75;
+  }
+  .notes-area::placeholder, .notes-title::placeholder { color: var(--text2); }
 
-/* ── Settings ── */
-.settings-wrap{overflow-y:auto;flex:1;padding:10px 0 30px;}
-.s-section{margin-bottom:24px;}
-.s-section-title{font-size:12px;color:var(--text2);text-transform:uppercase;
-  letter-spacing:.08em;padding:0 16px 6px;}
-.s-row{display:flex;align-items:center;justify-content:space-between;
-  padding:14px 16px;background:var(--surface);margin-bottom:1px;}
-.s-row:first-of-type{border-radius:14px 14px 0 0;}
-.s-row:last-of-type{border-radius:0 0 14px 14px;margin-bottom:0;}
-.s-row:only-of-type{border-radius:14px;}
-.s-left{display:flex;align-items:center;gap:12px;}
-.s-ic{width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:17px;}
-.s-label{font-size:15px;color:var(--text);}
-.sw{width:48px;height:28px;border-radius:14px;background:var(--border);
-  position:relative;cursor:pointer;transition:background .2s;flex-shrink:0;}
-.sw.on{background:#34c759;}
-.sw-k{width:24px;height:24px;border-radius:50%;background:#fff;
-  position:absolute;top:2px;left:2px;transition:left .2s;
-  box-shadow:0 1px 4px rgba(0,0,0,.4);}
-.sw.on .sw-k{left:22px;}
+  /* â”€â”€ Settings â”€â”€ */
+  .settings-body { overflow-y: auto; padding: 10px 0; }
+  .setting-section { padding: 0 12px; margin-bottom: 18px; }
+  .setting-section-title { font-size: 11px; color: var(--text2); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 6px; padding-left: 2px; }
+  .setting-row {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 11px 12px; font-size: 13px; color: var(--text);
+    background: var(--surface); border-radius: 10px; margin-bottom: 2px;
+  }
+  .setting-row-left { display: flex; align-items: center; gap: 10px; }
+  .setting-icon { width: 28px; height: 28px; border-radius: 7px; display: flex; align-items: center; justify-content: center; font-size: 15px; }
+  .toggle-sw {
+    width: 40px; height: 24px; border-radius: 12px;
+    background: var(--border); position: relative;
+    cursor: pointer; transition: background 0.2s; flex-shrink: 0;
+  }
+  .toggle-sw.on { background: var(--accent); }
+  .toggle-knob {
+    width: 20px; height: 20px; border-radius: 50%; background: #fff;
+    position: absolute; top: 2px; left: 2px;
+    transition: left 0.2s; box-shadow: 0 1px 3px rgba(0,0,0,0.3);
+  }
+  .toggle-sw.on .toggle-knob { left: 18px; }
 
-/* ── Music ── */
-.music-wrap{flex:1;display:flex;flex-direction:column;align-items:center;
-  justify-content:space-around;padding:24px 24px 32px;}
-.music-art{width:180px;height:180px;border-radius:20px;flex-shrink:0;
-  display:flex;align-items:center;justify-content:center;font-size:72px;
-  background:linear-gradient(135deg,var(--accent),var(--accent2));}
-.music-info{text-align:center;}
-.music-title{font-size:22px;font-weight:700;margin-bottom:4px;}
-.music-artist{font-size:15px;color:var(--text2);}
-.prog-wrap{width:100%;}
-.prog-bar{width:100%;height:5px;background:var(--surface2);border-radius:3px;cursor:pointer;}
-.prog-fill{height:100%;border-radius:3px;background:var(--accent);width:35%;transition:width .5s linear;}
-.prog-times{display:flex;justify-content:space-between;font-size:12px;color:var(--text2);margin-top:6px;}
-.music-ctrls{display:flex;align-items:center;gap:32px;}
-.mc{background:none;border:none;color:var(--text);font-size:28px;cursor:pointer;padding:8px;}
-.mc.play{font-size:56px;color:var(--accent);}
-.mc:active{opacity:.6;}
-.vol-row{display:flex;align-items:center;gap:10px;width:100%;}
-.vol-row i{font-size:18px;color:var(--text2);}
-.vol-row input{flex:1;accent-color:var(--accent);height:4px;}
+  /* â”€â”€ Calculator â”€â”€ */
+  .calc-body { padding: 12px; display: flex; flex-direction: column; gap: 10px; flex: 1; }
+  .calc-display {
+    background: var(--surface); border-radius: 10px;
+    padding: 14px 16px; font-size: 28px; font-weight: 300;
+    color: var(--text); text-align: right; min-height: 60px;
+    word-break: break-all; letter-spacing: -0.5px;
+  }
+  .calc-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; flex: 1; }
+  .calc-btn {
+    border-radius: 10px; border: none; font-size: 16px; font-weight: 400;
+    cursor: pointer; font-family: var(--font); color: var(--text);
+    background: var(--surface); transition: opacity 0.1s; aspect-ratio: 1;
+    display: flex; align-items: center; justify-content: center;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .calc-btn:active { opacity: 0.65; }
+  .calc-btn.op { background: var(--accent); color: #fff; }
+  .calc-btn.fn { background: rgba(255,255,255,0.15); }
+  .calc-btn.eq { background: var(--accent2); color: #13131f; }
+  .calc-btn.zero { grid-column: span 2; aspect-ratio: unset; border-radius: 28px; padding: 0 24px; justify-content: flex-start; }
 
-/* ── Gallery ── */
-.gallery-wrap{display:grid;grid-template-columns:repeat(3,1fr);gap:3px;overflow-y:auto;flex:1;}
-.gal-item{aspect-ratio:1;display:flex;align-items:center;justify-content:center;font-size:36px;cursor:pointer;}
-.gal-item:active{opacity:.7;}
+  /* â”€â”€ Music Player â”€â”€ */
+  .music-body { display: flex; flex-direction: column; align-items: center; padding: 20px 16px; gap: 14px; flex: 1; }
+  .music-art {
+    width: 100px; height: 100px; border-radius: 14px;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    display: flex; align-items: center; justify-content: center; font-size: 40px;
+    flex-shrink: 0;
+  }
+  .music-info { text-align: center; }
+  .music-title { font-size: 15px; font-weight: 600; margin-bottom: 2px; }
+  .music-artist { font-size: 12px; color: var(--text2); }
+  .music-progress { width: 100%; }
+  .progress-bar {
+    width: 100%; height: 4px; background: var(--surface2); border-radius: 2px;
+    position: relative; cursor: pointer;
+  }
+  .progress-fill { height: 100%; border-radius: 2px; background: var(--accent); width: 35%; transition: width 0.5s linear; }
+  .progress-times { display: flex; justify-content: space-between; font-size: 10px; color: var(--text2); margin-top: 4px; }
+  .music-controls { display: flex; align-items: center; gap: 24px; }
+  .ctrl-btn { background: none; border: none; color: var(--text); font-size: 22px; cursor: pointer; padding: 4px; }
+  .ctrl-btn.play { font-size: 44px; color: var(--accent); }
+  .ctrl-btn:active { opacity: 0.6; }
+  .volume-row { display: flex; align-items: center; gap: 8px; width: 100%; }
+  .volume-row .ui-icon { font-size: 15px; color: var(--text2); }
+  .volume-row input[type=range] { flex: 1; accent-color: var(--accent); }
 
-/* ── Notification ── */
-#notifs{position:fixed;top:54px;left:12px;right:12px;z-index:500;display:flex;flex-direction:column;gap:8px;pointer-events:none;}
-.notif{background:rgba(26,26,46,.95);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);
-  border:0.5px solid var(--border);border-radius:16px;padding:14px 16px;pointer-events:auto;
-  animation:nIn .3s ease;}
-.notif-title{font-size:12px;font-weight:600;color:var(--text2);margin-bottom:2px;}
-.notif-msg{font-size:14px;color:var(--text);}
-@keyframes nIn{from{transform:translateY(-20px);opacity:0;}to{transform:translateY(0);opacity:1;}}
-@keyframes nOut{to{transform:translateY(-20px);opacity:0;}}
+  /* â”€â”€ Context Menu â”€â”€ */
+  #ctx-menu {
+    position: fixed; background: rgba(30,30,50,0.95);
+    backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+    border: 0.5px solid var(--border); border-radius: 12px;
+    padding: 6px; min-width: 160px; z-index: 9999;
+    display: none;
+  }
+  .ctx-item {
+    padding: 9px 14px; border-radius: 7px; font-size: 13px;
+    color: var(--text); cursor: pointer; display: flex; align-items: center; gap: 10px;
+  }
+  .ctx-item:hover { background: var(--surface2); }
+  .ctx-item .ui-icon { font-size: 16px; color: var(--text2); }
+  .ctx-sep { height: 0.5px; background: var(--border); margin: 4px 0; }
+
+  /* â”€â”€ Notifications â”€â”€ */
+  #notif-container {
+    position: fixed; top: 12px; right: 12px; z-index: 9998;
+    display: flex; flex-direction: column; gap: 8px; pointer-events: none;
+  }
+  .notif {
+    background: rgba(26,26,46,0.95); backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 0.5px solid var(--border); border-radius: 12px;
+    padding: 12px 16px; font-size: 13px; color: var(--text);
+    max-width: 240px; pointer-events: auto;
+    animation: slideIn 0.3s ease;
+  }
+  .notif-title { font-weight: 600; font-size: 12px; color: var(--text2); margin-bottom: 2px; }
+  @keyframes slideIn { from { transform: translateX(120%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+  @keyframes slideOut { to { transform: translateX(120%); opacity: 0; } }
 </style>
 </head>
 <body>
-<div id="wp"></div>
 
-<!-- Status Bar -->
-<div id="status">
-  <div id="status-time">9:41</div>
-  <div id="status-icons">
-    <i class="ti ti-wifi"></i>
-    <i class="ti ti-signal-4g"></i>
-    <i class="ti ti-battery-3"></i>
-  </div>
+<div id="wallpaper"></div>
+<div id="desktop">
+  <div id="icon-grid"></div>
 </div>
 
-<!-- Home -->
-<div id="home">
-  <div id="app-grid"></div>
+<div id="taskbar">
+  <div id="taskbar-inner"></div>
+  <div id="tb-clock"></div>
 </div>
 
-<!-- Dock -->
-<div id="dock">
-  <div id="dock-inner"></div>
-</div>
-
-<!-- Full-screen App -->
-<div id="app-screen">
-  <div id="app-header">
-    <div id="back-btn" onclick="goHome()"><i class="ti ti-chevron-left"></i></div>
-    <div id="app-title"></div>
-    <div style="width:36px"></div>
-  </div>
-  <div id="app-content"></div>
-</div>
-
-<!-- Notifications -->
-<div id="notifs"></div>
+<div id="ctx-menu"></div>
+<div id="notif-container"></div>
 
 <script>
 const APPS = [
-  {id:'browser', label:'Browser',    icon:'ti-world',      color:'linear-gradient(135deg,#0070c9,#34aadc)'},
-  {id:'files',   label:'Files',      icon:'ti-folder',     color:'linear-gradient(135deg,#1D9E75,#4ecdc4)'},
-  {id:'notes',   label:'Notes',      icon:'ti-notes',      color:'linear-gradient(135deg,#f5a623,#f8c874)'},
-  {id:'music',   label:'Music',      icon:'ti-music',      color:'linear-gradient(135deg,#fc3c44,#ff8c69)'},
-  {id:'calc',    label:'Calculator', icon:'ti-calculator', color:'#111'},
-  {id:'gallery', label:'Gallery',    icon:'ti-photo',      color:'linear-gradient(135deg,#a29bfe,#fd79a8)'},
-  {id:'terminal',label:'Terminal',   icon:'ti-terminal-2', color:'#111'},
-  {id:'settings',label:'Settings',   icon:'ti-settings',   color:'linear-gradient(135deg,#636e72,#b2bec3)'},
+  { id:'browser',  label:'Browser',    icon:'browser',  color:'linear-gradient(135deg,#0070c9,#34aadc)' },
+  { id:'files',    label:'Files',      icon:'files',    color:'linear-gradient(135deg,#1D9E75,#4ecdc4)' },
+  { id:'terminal', label:'Terminal',   icon:'terminal', color:'#111' },
+  { id:'notes',    label:'Notes',      icon:'notes',    color:'linear-gradient(135deg,#f5a623,#f8c874)' },
+  { id:'music',    label:'Music',      icon:'music',    color:'linear-gradient(135deg,#fc3c44,#ff6b6b)' },
+  { id:'calc',     label:'Calculator', icon:'calc',     color:'#111' },
+  { id:'settings', label:'Settings',   icon:'settings', color:'linear-gradient(135deg,#636e72,#b2bec3)' },
+  { id:'gallery',  label:'Gallery',    icon:'gallery',  color:'linear-gradient(135deg,#a29bfe,#fd79a8)' },
 ];
-const DOCK = ['browser','files','notes','settings'];
 
-// Clock
-function tick(){
-  const n=new Date();
-  document.getElementById('status-time').textContent=n.toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});
+let zTop = 10;
+const openWindows = {};
+
+const ICONS = {
+  browser:'<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c3 3 4 6 4 9s-1 6-4 9c-3-3-4-6-4-9s1-6 4-9z"/></svg>',
+  files:'<svg viewBox="0 0 24 24"><path d="M3 7a2 2 0 0 1 2-2h5l2 2h7a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>',
+  notes:'<svg viewBox="0 0 24 24"><path d="M7 4h8l4 4v12H7a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z"/><path d="M14 4v5h5M8 13h8M8 17h6"/></svg>',
+  music:'<svg viewBox="0 0 24 24"><path d="M9 18V6l10-2v12"/><circle cx="6" cy="18" r="3"/><circle cx="16" cy="16" r="3"/></svg>',
+  calc:'<svg viewBox="0 0 24 24"><rect x="5" y="3" width="14" height="18" rx="2"/><path d="M8 7h8M8 11h2M12 11h2M16 11h0M8 15h2M12 15h2M16 15h0"/></svg>',
+  gallery:'<svg viewBox="0 0 24 24"><rect x="4" y="5" width="16" height="14" rx="2"/><circle cx="9" cy="10" r="2"/><path d="M6 17l4-4 3 3 2-2 3 3"/></svg>',
+  terminal:'<svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M7 9l3 3-3 3M12 15h5"/></svg>',
+  settings:'<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19 12a7 7 0 0 0-.1-1l2-1.5-2-3.4-2.4 1a7 7 0 0 0-1.7-1L14.5 3h-5l-.3 3.1a7 7 0 0 0-1.7 1l-2.4-1-2 3.4 2 1.5a7 7 0 0 0 0 2l-2 1.5 2 3.4 2.4-1a7 7 0 0 0 1.7 1l.3 3.1h5l.3-3.1a7 7 0 0 0 1.7-1l2.4 1 2-3.4-2-1.5c.1-.3.1-.7.1-1z"/></svg>',
+  arrowLeft:'<svg viewBox="0 0 24 24"><path d="M15 6l-6 6 6 6"/></svg>',
+  arrowRight:'<svg viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg>',
+  refresh:'<svg viewBox="0 0 24 24"><path d="M20 12a8 8 0 1 1-2.3-5.7"/><path d="M20 4v6h-6"/></svg>',
+  play:'<svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>',
+  pause:'<svg viewBox="0 0 24 24"><path d="M7 5h4v14H7zM13 5h4v14h-4z"/></svg>',
+  skipBack:'<svg viewBox="0 0 24 24"><path d="M6 5v14M19 6l-10 6 10 6z"/></svg>',
+  skipForward:'<svg viewBox="0 0 24 24"><path d="M18 5v14M5 6l10 6-10 6z"/></svg>'
+};
+const TEXT_ICONS = {
+  folder:'DIR', fileText:'TXT', pdf:'PDF', photo:'IMG', table:'CSV',
+  wifi:'WiFi', bluetooth:'BT', plane:'Air', moon:'Night', bell:'Note', brightness:'Sun',
+  mountain:'MT', beach:'Sea', building:'City', tree:'Tree', car:'Car', camera:'Cam',
+  heart:'Love', star:'Star', flame:'Hot', cloud:'Cloud', sun:'Sun', volume:'Vol-', volume2:'Vol+'
+};
+function icon(name, cls='ui-icon', label='') {
+  const attrs = label ? `aria-label="${label}"` : 'aria-hidden="true"';
+  if (ICONS[name]) return `<span class="${cls}" ${attrs}>${ICONS[name]}</span>`;
+  return `<span class="${cls} emoji-icon" ${attrs}>${TEXT_ICONS[name] || '?'}</span>`;
 }
-tick();setInterval(tick,1000);
 
-// Build icons
-const grid=document.getElementById('app-grid');
-APPS.forEach(a=>{
-  const el=document.createElement('div');
-  el.className='app-icon';
-  el.innerHTML=`<div class="icon-shell" style="background:${a.color}"><i class="ti ${a.icon}" style="color:#fff"></i></div><span class="icon-label">${a.label}</span>`;
-  el.addEventListener('click',()=>openApp(a.id));
+// â”€â”€ Clock â”€â”€
+function tick() {
+  const n = new Date();
+  document.getElementById('tb-clock').textContent =
+    n.toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'});
+}
+tick(); setInterval(tick, 1000);
+
+// â”€â”€ Icons â”€â”€
+const grid = document.getElementById('icon-grid');
+APPS.forEach(app => {
+  const el = document.createElement('div');
+  el.className = 'app-icon';
+  el.innerHTML = `
+    <div class="icon-shell" style="background:${app.color}">
+      ${icon(app.icon)}
+    </div>
+    <span class="icon-label">${app.label}</span>
+  `;
+  el.addEventListener('click', () => openApp(app.id));
   grid.appendChild(el);
 });
 
-// Dock
-const dockEl=document.getElementById('dock-inner');
-DOCK.forEach(id=>{
-  const a=APPS.find(x=>x.id===id);
-  const el=document.createElement('div');
-  el.className='dock-icon';
-  el.innerHTML=`<div class="dock-shell" style="background:${a.color}"><i class="ti ${a.icon}" style="color:#fff"></i></div><span class="dock-label">${a.label}</span>`;
-  el.addEventListener('click',()=>openApp(id));
-  dockEl.appendChild(el);
-});
+// â”€â”€ Open App â”€â”€
+function openApp(id) {
+  if (openWindows[id]) {
+    openWindows[id].style.zIndex = ++zTop;
+    return;
+  }
+  const app = APPS.find(a => a.id === id);
+  const win = document.createElement('div');
+  win.className = 'window';
+  win.id = 'win-' + id;
 
-// Open / close app
-const screen=document.getElementById('app-screen');
-function openApp(id){
-  const a=APPS.find(x=>x.id===id);
-  document.getElementById('app-title').textContent=a.label;
-  document.getElementById('app-content').innerHTML=buildApp(id);
-  screen.style.display='flex';
-  requestAnimationFrame(()=>screen.classList.add('open'));
-  if(id==='terminal')initTerm();
-  if(id==='calc')initCalc();
-  if(id==='music')initMusic();
-}
-function goHome(){
-  screen.classList.remove('open');
-  setTimeout(()=>{screen.style.display='none';document.getElementById('app-content').innerHTML='';},320);
-}
+  const vw = window.innerWidth, vh = window.innerHeight;
+  const w = Math.min(360, vw - 20);
+  const h = Math.min(420, vh - 100);
+  const x = Math.floor(Math.random() * Math.max(0, vw - w - 20)) + 10;
+  const y = Math.floor(Math.random() * Math.max(0, vh - h - 100)) + 10;
 
-// Swipe down to go home
-let touchStartY=0;
-screen.addEventListener('touchstart',e=>touchStartY=e.touches[0].clientY,{passive:true});
-screen.addEventListener('touchend',e=>{
-  const dy=e.changedTouches[0].clientY-touchStartY;
-  if(dy>80)goHome();
-},{passive:true});
-
-// ── App builders ──
-function buildApp(id){
-  if(id==='browser') return `
-    <div id="browser-bar">
-      <input id="browser-url" placeholder="Search or enter URL..." onkeydown="if(event.key==='Enter')bGo()">
-      <button id="go-btn" onclick="bGo()">Go</button>
+  win.style.cssText = `left:${x}px;top:${y}px;width:${w}px;height:${h}px;z-index:${++zTop}`;
+  win.innerHTML = `
+    <div class="win-bar" id="bar-${id}">
+      <div class="win-dots">
+        <button class="wdot" style="background:var(--red)" onclick="closeApp('${id}')"></button>
+        <button class="wdot" style="background:var(--yellow)" onclick="minimizeApp('${id}')"></button>
+        <button class="wdot" style="background:var(--green)" onclick="maximizeApp('${id}')"></button>
+      </div>
+      <span class="win-title">${app.label}</span>
     </div>
-    <div class="bookmarks">
-      ${[['ti-brand-google','Google','https://google.com'],['ti-brand-youtube','YouTube','https://youtube.com'],
-         ['ti-world','Wikipedia','https://wikipedia.org'],['ti-brand-reddit','Reddit','https://reddit.com'],
-         ['ti-news','News','https://news.ycombinator.com'],['ti-brand-github','GitHub','https://github.com']
-        ].map(([ic,n,u])=>`<a class="bm" href="${u}" target="_blank"><i class="ti ${ic}"></i><span>${n}</span></a>`).join('')}
-    </div>
-    <button id="browser-open-btn" onclick="bOpenTab()">Open in Safari <i class="ti ti-external-link"></i></button>
-    <p id="browser-note">Most websites block embedding. Tap a bookmark or enter a URL and hit "Open in Safari" to browse for real.</p>
+    <div class="win-body" id="body-${id}">${buildApp(id)}</div>
+    <div class="resize-h" id="resize-${id}"></div>
   `;
-  if(id==='files') return `
-    <div class="files-wrap">
-      <div class="section-label">Folders</div>
-      ${[['Documents','ti-folder-filled','#4ecdc4','12 items'],['Downloads','ti-folder-filled','#7c6fff','8 items'],
-         ['Photos','ti-folder-filled','#fc3c44','247 items'],['Music','ti-folder-filled','#f5a623','34 items'],
-         ['Videos','ti-folder-filled','#a29bfe','6 items']].map(([n,ic,c,m])=>`
-        <div class="file-row">
-          <div class="file-icon" style="background:${c}20"><i class="ti ${ic}" style="color:${c}"></i></div>
-          <div class="file-info"><div class="file-name">${n}</div><div class="file-meta">${m}</div></div>
-          <i class="ti ti-chevron-right file-arrow"></i>
-        </div>`).join('')}
-      <div class="section-label">Recent Files</div>
-      ${[['notes.txt','ti-file-text','#4ecdc4','2 KB','Today'],['resume.pdf','ti-file-type-pdf','#fc3c44','148 KB','Yesterday'],
-         ['photo.jpg','ti-photo','#a29bfe','3.4 MB','Yesterday'],['music.mp3','ti-music','#f5a623','4.1 MB','Mon'],
-         ['data.csv','ti-table','#7c6fff','12 KB','Sun']].map(([n,ic,c,s,d])=>`
-        <div class="file-row">
-          <div class="file-icon" style="background:${c}20"><i class="ti ${ic}" style="color:${c}"></i></div>
-          <div class="file-info"><div class="file-name">${n}</div><div class="file-meta">${s} · ${d}</div></div>
-          <i class="ti ti-chevron-right file-arrow"></i>
-        </div>`).join('')}
-    </div>`;
-  if(id==='notes') return `
-    <div class="notes-wrap">
-      <input id="note-title" placeholder="Title..." value="My Notes">
-      <textarea id="note-body" placeholder="Start writing..."></textarea>
-    </div>`;
-  if(id==='calc') return `
-    <div class="calc-wrap">
-      <div id="calc-disp">0</div>
-      <div id="calc-btns"></div>
-    </div>`;
-  if(id==='settings') return `
-    <div class="settings-wrap">
-      <div class="s-section">
-        <div class="s-section-title">Connectivity</div>
-        ${[['Wi-Fi','ti-wifi','#0070c9',true],['Bluetooth','ti-bluetooth','#0070c9',true],['Airplane Mode','ti-plane','#636e72',false]]
-          .map(([l,ic,c,on])=>`
-          <div class="s-row">
-            <div class="s-left"><div class="s-ic" style="background:${c}20"><i class="ti ${ic}" style="color:${c}"></i></div><span class="s-label">${l}</span></div>
-            <div class="sw${on?' on':''}" onclick="this.classList.toggle('on')"><div class="sw-k"></div></div>
-          </div>`).join('')}
+  document.getElementById('desktop').appendChild(win);
+  openWindows[id] = win;
+
+  // taskbar entry
+  const tb = document.getElementById('taskbar-inner');
+  const btn = document.createElement('div');
+  btn.className = 'tb-app'; btn.id = 'tb-' + id;
+  btn.innerHTML = `${icon(app.icon)}${app.label}`;
+  btn.addEventListener('click', () => {
+    if (win.style.display === 'none') win.style.display = 'flex';
+    win.style.zIndex = ++zTop;
+  });
+  tb.appendChild(btn);
+
+  makeDraggable(win, document.getElementById('bar-' + id));
+  makeResizable(win, document.getElementById('resize-' + id));
+
+  if (id === 'terminal') initTerminal();
+  if (id === 'calc') initCalc();
+  if (id === 'music') initMusic();
+
+  win.addEventListener('mousedown', () => win.style.zIndex = ++zTop);
+  win.addEventListener('touchstart', () => win.style.zIndex = ++zTop, {passive:true});
+
+  notify(app.label + ' opened');
+}
+
+function closeApp(id) {
+  const win = document.getElementById('win-' + id);
+  if (win) win.remove();
+  const tb = document.getElementById('tb-' + id);
+  if (tb) tb.remove();
+  delete openWindows[id];
+}
+
+function minimizeApp(id) {
+  const win = document.getElementById('win-' + id);
+  if (win) win.style.display = win.style.display === 'none' ? 'flex' : 'none';
+}
+
+let maximized = {};
+function maximizeApp(id) {
+  const win = document.getElementById('win-' + id);
+  if (!win) return;
+  if (maximized[id]) {
+    Object.assign(win.style, maximized[id]);
+    delete maximized[id];
+  } else {
+    maximized[id] = { left:win.style.left, top:win.style.top, width:win.style.width, height:win.style.height };
+    Object.assign(win.style, { left:'0px', top:'0px', width:'100vw', height:`calc(100vh - 72px)`, borderRadius:'0' });
+  }
+}
+
+// â”€â”€ App Content â”€â”€
+function buildApp(id) {
+  if (id === 'browser') return `
+    <div class="browser-bar">
+      <button onclick="browserNav(-1)" aria-label="Back" style="background:transparent;border:none;color:var(--text2);font-size:18px;cursor:pointer;padding:2px 6px;">${icon('arrowLeft')}</button>
+      <button onclick="browserNav(1)" aria-label="Forward" style="background:transparent;border:none;color:var(--text2);font-size:18px;cursor:pointer;padding:2px 6px;">${icon('arrowRight')}</button>
+      <input id="browser-url" placeholder="Search or enter URL..." value="https://example.com" onkeydown="if(event.key==='Enter')loadUrl()">
+      <button onclick="loadUrl()">Go</button>
+      <button onclick="openUrlSafari()">Safari</button>
+    </div>
+    <iframe id="browser-frame" src="https://example.com"></iframe>
+  `;
+  if (id === 'files') return `
+    <div class="files-body" style="flex:1">
+      <div style="padding:8px 10px;font-size:11px;color:var(--text2);text-transform:uppercase;letter-spacing:0.07em">Folders</div>
+      ${['Documents','Downloads','Photos','Music','Videos','Desktop','Recents'].map(f=>`
+        <div class="file-row"><span style="color:#4ecdc4">${icon('folder')}</span><span>${f}</span><span class="file-size">--</span></div>
+      `).join('')}
+      <div style="padding:8px 10px;font-size:11px;color:var(--text2);text-transform:uppercase;letter-spacing:0.07em;margin-top:8px">Recent Files</div>
+      ${[['notes.txt','2 KB','fileText'],['resume.pdf','148 KB','pdf'],['photo.jpg','3.4 MB','photo'],['music.mp3','4.1 MB','music'],['data.csv','12 KB','table']].map(([n,s,ic])=>`
+        <div class="file-row">${icon(ic)}<span>${n}</span><span class="file-size">${s}</span></div>
+      `).join('')}
+    </div>
+  `;
+  if (id === 'terminal') return `
+    <div class="term-body" id="term-body">
+      <div class="term-line" style="color:#7c6fff">PhoneOS Terminal v1.0</div>
+      <div class="term-line" style="color:rgba(240,240,245,0.4)">Type <span style="color:#4ecdc4">help</span> to see available commands.</div>
+      <div id="term-output"></div>
+      <div class="term-input-row">
+        <span class="term-prompt">$&nbsp;</span>
+        <input id="term-input" type="text" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="enter command...">
       </div>
-      <div class="s-section">
-        <div class="s-section-title">Display</div>
-        ${[['Dark Mode','ti-moon','#5c5470',true],['Notifications','ti-bell','#ff9f0a',true],['Auto Brightness','ti-brightness','#f5a623',false]]
-          .map(([l,ic,c,on])=>`
-          <div class="s-row">
-            <div class="s-left"><div class="s-ic" style="background:${c}20"><i class="ti ${ic}" style="color:${c}"></i></div><span class="s-label">${l}</span></div>
-            <div class="sw${on?' on':''}" onclick="this.classList.toggle('on')"><div class="sw-k"></div></div>
-          </div>`).join('')}
+    </div>
+  `;
+  if (id === 'notes') return `
+    <div class="notes-body">
+      <input class="notes-title" placeholder="Title..." value="My Notes">
+      <textarea class="notes-area" placeholder="Start writing..."></textarea>
+    </div>
+  `;
+  if (id === 'calc') return `
+    <div class="calc-body">
+      <div class="calc-display" id="calc-display">0</div>
+      <div class="calc-grid" id="calc-grid"></div>
+    </div>
+  `;
+  if (id === 'settings') return `
+    <div class="settings-body" style="flex:1">
+      <div class="setting-section">
+        <div class="setting-section-title">Connectivity</div>
+        ${[
+          ['Wi-Fi','wifi','#0070c9',true],
+          ['Bluetooth','bluetooth','#0070c9',true],
+          ['Airplane Mode','plane','#636e72',false],
+        ].map(([l,ic,c,on])=>`
+          <div class="setting-row">
+            <div class="setting-row-left">
+              <div class="setting-icon" style="background:${c}20;color:${c}">${icon(ic)}</div>
+              <span>${l}</span>
+            </div>
+            <div class="toggle-sw${on?' on':''}" onclick="this.classList.toggle('on')"><div class="toggle-knob"></div></div>
+          </div>
+        `).join('')}
       </div>
-      <div class="s-section">
-        <div class="s-section-title">About</div>
-        <div class="s-row"><div class="s-left"><span class="s-label">Device</span></div><span style="color:var(--text2);font-size:14px">iPhone 7</span></div>
-        <div class="s-row"><div class="s-left"><span class="s-label">OS Version</span></div><span style="color:var(--text2);font-size:14px">PhoneOS 2.0</span></div>
-        <div class="s-row"><div class="s-left"><span class="s-label">Storage</span></div><span style="color:var(--text2);font-size:14px">32 GB</span></div>
+      <div class="setting-section">
+        <div class="setting-section-title">Display</div>
+        ${[
+          ['Dark Mode','moon','#5c5470',true],
+          ['Notifications','bell','#ff9f0a',true],
+          ['Auto-Brightness','brightness','#f5a623',false],
+        ].map(([l,ic,c,on])=>`
+          <div class="setting-row">
+            <div class="setting-row-left">
+              <div class="setting-icon" style="background:${c}20;color:${c}">${icon(ic)}</div>
+              <span>${l}</span>
+            </div>
+            <div class="toggle-sw${on?' on':''}" onclick="this.classList.toggle('on')"><div class="toggle-knob"></div></div>
+          </div>
+        `).join('')}
       </div>
-    </div>`;
-  if(id==='music') return `
-    <div class="music-wrap">
-      <div class="music-art"><i class="ti ti-music" style="color:#fff"></i></div>
+    </div>
+  `;
+  if (id === 'music') return `
+    <div class="music-body">
+      <div class="music-art">${icon('music')}</div>
       <div class="music-info">
-        <div class="music-title" id="m-title">Midnight Drive</div>
-        <div class="music-artist" id="m-artist">Synthwave Radio</div>
+        <div class="music-title" id="music-title">Midnight Drive</div>
+        <div class="music-artist" id="music-artist">Synthwave Radio</div>
       </div>
-      <div class="prog-wrap">
-        <div class="prog-bar"><div class="prog-fill" id="m-fill"></div></div>
-        <div class="prog-times"><span id="m-cur">1:12</span><span id="m-tot">3:24</span></div>
+      <div class="music-progress">
+        <div class="progress-bar"><div class="progress-fill" id="prog-fill"></div></div>
+        <div class="progress-times"><span id="prog-cur">1:12</span><span id="prog-tot">3:24</span></div>
       </div>
-      <div class="music-ctrls">
-        <button class="mc" onclick="prevTrk()"><i class="ti ti-player-skip-back-filled"></i></button>
-        <button class="mc play" id="m-play" onclick="togglePlay()"><i class="ti ti-player-play-filled"></i></button>
-        <button class="mc" onclick="nextTrk()"><i class="ti ti-player-skip-forward-filled"></i></button>
+      <div class="music-controls">
+        <button class="ctrl-btn" onclick="prevTrack()" aria-label="Previous">${icon('skipBack')}</button>
+        <button class="ctrl-btn play" id="play-btn" onclick="togglePlay()" aria-label="Play">${icon('play','ui-icon fill')}</button>
+        <button class="ctrl-btn" onclick="nextTrack()" aria-label="Next">${icon('skipForward')}</button>
       </div>
-      <div class="vol-row">
-        <i class="ti ti-volume"></i>
+      <div class="volume-row">
+        ${icon('volume')}
         <input type="range" min="0" max="100" value="70">
-        <i class="ti ti-volume-2"></i>
+        ${icon('volume2')}
       </div>
-    </div>`;
-  if(id==='gallery') return `
-    <div class="gallery-wrap">
-      ${Array.from({length:18},(_,i)=>{
-        const colors=['#7c6fff','#4ecdc4','#fc3c44','#f5a623','#28c840','#0070c9','#a29bfe','#fd79a8','#636e72','#00cec9','#e17055','#6c5ce7','#fdcb6e','#55efc4','#ff7675','#74b9ff','#fab1a0','#81ecec'];
-        const icons=['ti-mountain','ti-beach','ti-building','ti-tree','ti-car','ti-camera','ti-heart','ti-star','ti-flame','ti-cloud','ti-sun','ti-moon','ti-fish','ti-paw','ti-flower','ti-snowflake','ti-rocket','ti-diamond'];
-        return `<div class="gal-item" style="background:${colors[i]}22"><i class="ti ${icons[i]}" style="color:${colors[i]}"></i></div>`;
+    </div>
+  `;
+  if (id === 'gallery') return `
+    <div style="padding:10px;display:grid;grid-template-columns:repeat(3,1fr);gap:4px;overflow-y:auto;flex:1">
+      ${Array.from({length:12},(_,i)=>{
+        const colors=['#7c6fff','#4ecdc4','#fc3c44','#f5a623','#28c840','#0070c9','#a29bfe','#fd79a8','#636e72','#00cec9','#e17055','#6c5ce7'];
+        const icons=['mountain','beach','building','tree','car','camera','heart','star','flame','cloud','sun','moon'];
+        return `<div style="aspect-ratio:1;border-radius:8px;background:${colors[i%colors.length]}20;border:0.5px solid ${colors[i%colors.length]}40;display:flex;align-items:center;justify-content:center;cursor:pointer">
+          <span style="font-size:28px;color:${colors[i%colors.length]}">${icon(icons[i%icons.length])}</span>
+        </div>`;
       }).join('')}
-    </div>`;
-  if(id==='terminal') return `
-    <div class="term-wrap">
-      <div class="term-out" id="term-out">
-        <div class="term-line" style="color:var(--accent)">PhoneOS Terminal v2.0</div>
-        <div class="term-line" style="color:var(--text2)">Type <span style="color:var(--accent2)">help</span> for commands.</div>
-      </div>
-      <div class="term-bar">
-        <span>$ </span>
-        <input id="term-inp" type="text" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="type here...">
-      </div>
-    </div>`;
-  return '<div style="padding:20px;color:var(--text2)">Coming soon</div>';
+    </div>
+  `;
+  return `<div style="padding:20px;color:var(--text2);text-align:center">Coming soon</div>`;
 }
 
-// Browser
-function bGo(){
-  const u=document.getElementById('browser-url').value.trim();
-  if(u) window.open(u.startsWith('http')?u:'https://'+u,'_blank');
+// â”€â”€ Browser helpers â”€â”€
+function loadUrl() {
+  const input = document.getElementById('browser-url');
+  if (!input) return;
+  let url = input.value.trim();
+  if (!url.startsWith('http')) url = 'https://' + url;
+  input.value = url;
+  const frame = document.getElementById('browser-frame');
+  if (frame) frame.src = url;
+  notify('Trying inside Browser');
 }
-function bOpenTab(){
-  const u=document.getElementById('browser-url').value.trim();
-  window.open(u&&(u.startsWith('http')?u:'https://'+u)||'https://google.com','_blank');
+function openUrlSafari() {
+  const input = document.getElementById('browser-url');
+  let url = input && input.value.trim() ? input.value.trim() : 'https://example.com';
+  if (!url.startsWith('http')) url = 'https://' + url;
+  window.open(url, '_blank');
+}
+function browserNav(dir) {
+  const frame = document.getElementById('browser-frame');
+  if (frame) dir < 0 ? frame.contentWindow.history.back() : frame.contentWindow.history.forward();
 }
 
-// Terminal
-const FS={'/':['Documents','Downloads','Photos','Music'],'/Documents':['resume.pdf','notes.txt'],'/Downloads':['photo.jpg','setup.dmg']};
-let cwd='/',hist=[],hIdx=-1;
-function initTerm(){
-  const inp=document.getElementById('term-inp');
-  if(!inp)return;
-  inp.addEventListener('keydown',e=>{
-    if(e.key==='Enter'){runCmd(inp.value.trim());inp.value='';hIdx=-1;}
-    else if(e.key==='ArrowUp'){if(hIdx<hist.length-1){hIdx++;inp.value=hist[hIdx];}}
-    else if(e.key==='ArrowDown'){if(hIdx>0){hIdx--;inp.value=hist[hIdx];}else{hIdx=-1;inp.value='';}}
+// â”€â”€ Terminal â”€â”€
+const FS = {
+  '/': ['Documents','Downloads','Photos','Music'],
+  '/Documents': ['resume.pdf','notes.txt','project.zip'],
+  '/Downloads': ['setup.dmg','photo.jpg'],
+};
+let cwd = '/';
+let termHistory = []; let histIdx = -1;
+
+function initTerminal() {
+  const inp = document.getElementById('term-input');
+  if (!inp) return;
+  inp.addEventListener('keydown', e => {
+    if (e.key === 'Enter') { runCmd(inp.value.trim()); inp.value = ''; histIdx = -1; }
+    else if (e.key === 'ArrowUp') { if (histIdx < termHistory.length-1) { histIdx++; inp.value = termHistory[histIdx]; } }
+    else if (e.key === 'ArrowDown') { if (histIdx > 0) { histIdx--; inp.value = termHistory[histIdx]; } else { histIdx=-1; inp.value=''; } }
   });
   inp.focus();
 }
-function runCmd(raw){
-  if(!raw)return;
-  hist.unshift(raw);
-  const out=document.getElementById('term-out');
-  if(!out)return;
-  const[cmd,...args]=raw.split(' ');
-  let res='';
-  const cmds={
-    help:()=>`<span style="color:var(--accent)">Commands:</span> ls, cd, pwd, echo, date, whoami, clear, neofetch, mkdir, touch, rm`,
-    ls:()=>(FS[cwd]||[]).join('  ')||'(empty)',
-    pwd:()=>cwd,
-    date:()=>new Date().toString(),
-    whoami:()=>'iphone-user',
-    neofetch:()=>`<span style="color:var(--accent)">OS:</span> PhoneOS 2.0\n<span style="color:var(--accent)">Device:</span> iPhone 7\n<span style="color:var(--accent)">CPU:</span> Apple A10 Fusion\n<span style="color:var(--accent)">Shell:</span> PhoneSH\n<span style="color:var(--accent)">Resolution:</span> 750×1334`,
-  };
-  if(cmd==='clear'){out.innerHTML='';return;}
-  else if(cmd==='echo')res=args.join(' ');
-  else if(cmd==='cd'){const t=args[0];if(!t||t==='~'){cwd='/';}else if(t==='..'){cwd=cwd.split('/').slice(0,-1).join('/')||'/';}else{const p=cwd==='/'?'/'+t:cwd+'/'+t;if(FS[p])cwd=p;else res=`<span class="term-err">cd: ${t}: not found</span>`;}}
-  else if(cmd==='mkdir'&&args[0]){const p=cwd==='/'?'/'+args[0]:cwd+'/'+args[0];FS[cwd]=FS[cwd]||[];FS[cwd].push(args[0]);FS[p]=[];}
-  else if(cmd==='touch'&&args[0]){FS[cwd]=FS[cwd]||[];FS[cwd].push(args[0]);}
-  else if(cmd==='rm'&&args[0]){FS[cwd]=(FS[cwd]||[]).filter(f=>f!==args[0]);}
-  else if(cmds[cmd])res=cmds[cmd]();
-  else res=`<span class="term-err">${cmd}: command not found</span>`;
-  const line=document.createElement('div');
-  line.className='term-line';
-  line.innerHTML=`<span class="term-cmd-color">$ ${raw}</span>${res?'\n'+res:''}`;
-  out.appendChild(line);
-  out.scrollTop=out.scrollHeight;
+
+function runCmd(raw) {
+  if (!raw) return;
+  termHistory.unshift(raw);
+  const out = document.getElementById('term-output');
+  const [cmd, ...args] = raw.split(' ');
+  let result = '';
+  switch(cmd) {
+    case 'help': result = `<span style="color:#7c6fff">Available commands:</span>\n  ls, cd, pwd, cat, echo, date, whoami, clear, neofetch, mkdir, touch, rm`; break;
+    case 'ls': result = (FS[cwd] || []).join('  ') || '(empty)'; break;
+    case 'pwd': result = cwd; break;
+    case 'cd': {
+      const target = args[0];
+      if (!target || target === '~') { cwd='/'; result=''; }
+      else if (target === '..') { cwd=cwd.split('/').slice(0,-1).join('/') || '/'; result=''; }
+      else { const p=cwd==='/'?'/'+target:cwd+'/'+target; if(FS[p]){cwd=p;result='';}else result=`<span class="term-error">cd: ${target}: no such directory</span>`; }
+      break;
+    }
+    case 'echo': result = args.join(' '); break;
+    case 'date': result = new Date().toString(); break;
+    case 'whoami': result = 'iphone-user'; break;
+    case 'clear': if(out) out.innerHTML=''; return;
+    case 'neofetch': result = `<span style="color:#7c6fff">
+  â–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ•— â–ˆâ–ˆâ•—  â–ˆâ–ˆâ•— â–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ•— â–ˆâ–ˆâ–ˆâ•—   â–ˆâ–ˆâ•—â–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ•— â–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ•— â–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ•—
+  â–ˆâ–ˆâ•”â•â•â–ˆâ–ˆâ•—â–ˆâ–ˆâ•‘  â–ˆâ–ˆâ•‘â–ˆâ–ˆâ•”â•â•â•â–ˆâ–ˆâ•—â–ˆâ–ˆâ–ˆâ–ˆâ•—  â–ˆâ–ˆâ•‘â–ˆâ–ˆâ•”â•â•â•â•â•â–ˆâ–ˆâ•”â•â•â•â–ˆâ–ˆâ•—â–ˆâ–ˆâ•”â•â•â•â•â•
+  â–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ•”â•â–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ•‘â–ˆâ–ˆâ•‘   â–ˆâ–ˆâ•‘â–ˆâ–ˆâ•”â–ˆâ–ˆâ•— â–ˆâ–ˆâ•‘â–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ•—  â–ˆâ–ˆâ•‘   â–ˆâ–ˆâ•‘â–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ•—
+  â–ˆâ–ˆâ•”â•â•â•â• â–ˆâ–ˆâ•”â•â•â–ˆâ–ˆâ•‘â–ˆâ–ˆâ•‘   â–ˆâ–ˆâ•‘â–ˆâ–ˆâ•‘â•šâ–ˆâ–ˆâ•—â–ˆâ–ˆâ•‘â–ˆâ–ˆâ•”â•â•â•  â–ˆâ–ˆâ•‘   â–ˆâ–ˆâ•‘â•šâ•â•â•â•â–ˆâ–ˆâ•‘
+  â–ˆâ–ˆâ•‘     â–ˆâ–ˆâ•‘  â–ˆâ–ˆâ•‘â•šâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ•”â•â–ˆâ–ˆâ•‘ â•šâ–ˆâ–ˆâ–ˆâ–ˆâ•‘â–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ•—â•šâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ•”â•â–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ•‘
+  â•šâ•â•     â•šâ•â•  â•šâ•â• â•šâ•â•â•â•â•â• â•šâ•â•  â•šâ•â•â•â•â•šâ•â•â•â•â•â•â• â•šâ•â•â•â•â•â• â•šâ•â•â•â•â•â•â•</span>
+<span style="color:#4ecdc4">OS:</span>       PhoneOS 1.0
+<span style="color:#4ecdc4">Device:</span>   iPhone 7
+<span style="color:#4ecdc4">CPU:</span>      Apple A10 Fusion
+<span style="color:#4ecdc4">Shell:</span>    PhoneSH
+<span style="color:#4ecdc4">Theme:</span>    Dark Violet`; break;
+    case 'mkdir': if(args[0]){const p=cwd==='/'?'/'+args[0]:cwd+'/'+args[0];FS[cwd]=FS[cwd]||[];FS[cwd].push(args[0]);FS[p]=[];result='';}else result='mkdir: missing operand'; break;
+    case 'touch': if(args[0]){FS[cwd]=FS[cwd]||[];FS[cwd].push(args[0]);result='';}else result='touch: missing operand'; break;
+    case 'rm': if(args[0]){FS[cwd]=(FS[cwd]||[]).filter(f=>f!==args[0]);result='';}else result='rm: missing operand'; break;
+    default: result = `<span class="term-error">${cmd}: command not found</span>`;
+  }
+  if (out) {
+    const line = document.createElement('div');
+    line.className = 'term-line';
+    line.innerHTML = `<span class="term-prompt">$ </span><span>${raw}</span>${result?'\n'+result:''}`;
+    out.appendChild(line);
+    const tb = document.getElementById('term-body');
+    if (tb) tb.scrollTop = tb.scrollHeight;
+  }
 }
 
-// Calc
-function initCalc(){
-  const grid=document.getElementById('calc-btns');if(!grid)return;
-  const disp=document.getElementById('calc-disp');
-  let expr='',evaled=false;
-  const layout=[[{l:'C',c:'fn'},{l:'±',c:'fn'},{l:'%',c:'fn'},{l:'÷',c:'op'}],
-    [{l:'7'},{l:'8'},{l:'9'},{l:'×',c:'op'}],[{l:'4'},{l:'5'},{l:'6'},{l:'−',c:'op'}],
-    [{l:'1'},{l:'2'},{l:'3'},{l:'+',c:'op'}],[{l:'0',c:'zero'},{l:'.'},{l:'=',c:'eq'}]];
-  layout.forEach(row=>row.forEach(({l,c=''})=>{
-    const b=document.createElement('button');
-    b.className='cb '+c;b.textContent=l;
-    b.addEventListener('click',()=>{
-      if(l==='C'){expr='';disp.textContent='0';}
-      else if(l==='='){try{const r=Function('"use strict";return('+expr.replace(/÷/g,'/').replace(/×/g,'*').replace(/−/g,'-')+')')();expr=String(r);disp.textContent=+r.toFixed(10);}catch{disp.textContent='Err';expr='';}evaled=true;}
-      else if(l==='±'){const n=-parseFloat(expr||'0');expr=String(n);disp.textContent=n;}
-      else if(l==='%'){const n=parseFloat(expr||'0')/100;expr=String(n);disp.textContent=n;}
-      else{if(evaled&&!'÷×−+'.includes(l)){expr='';}evaled=false;expr+=l;disp.textContent=expr;}
+// â”€â”€ Calculator â”€â”€
+function initCalc() {
+  const grid = document.getElementById('calc-grid');
+  if (!grid) return;
+  let expr='', justEvaled=false;
+  const display = document.getElementById('calc-display');
+  const layout = [
+    [{l:'C',cls:'fn'},{l:'+/-',cls:'fn'},{l:'%',cls:'fn'},{l:'/',cls:'op'}],
+    [{l:'7'},{l:'8'},{l:'9'},{l:'*',cls:'op'}],
+    [{l:'4'},{l:'5'},{l:'6'},{l:'-',cls:'op'}],
+    [{l:'1'},{l:'2'},{l:'3'},{l:'+'  ,cls:'op'}],
+    [{l:'0',cls:'zero'},{l:'.'},{l:'=',cls:'eq'}],
+  ];
+  layout.forEach(row => row.forEach(({l,cls=''}) => {
+    const b = document.createElement('button');
+    b.className = 'calc-btn ' + cls; b.textContent = l;
+    b.addEventListener('click', () => {
+      if (l==='C'){expr='';display.textContent='0';}
+      else if (l==='='){ try{const r=Function('"use strict";return('+expr+')')();expr=String(r);display.textContent=+r.toFixed(10);}catch{display.textContent='Error';expr='';} justEvaled=true; }
+      else if (l==='+/-'){const n=-parseFloat(expr||'0');expr=String(n);display.textContent=n;}
+      else if (l==='%'){const n=parseFloat(expr||'0')/100;expr=String(n);display.textContent=n;}
+      else { if(justEvaled&&!'/*-+'.includes(l)){expr='';} justEvaled=false; expr+=l; display.textContent=expr; }
     });
     grid.appendChild(b);
   }));
 }
-
-// Music
-let playing=false,pInt=null,pSec=72,totSec=204;
+let playing=false, progInterval=null, progSec=72, totalSec=204;
 const tracks=[['Midnight Drive','Synthwave Radio'],['Neon Lights','Electric Dreams'],['Cyberpunk City','Digital Pulse']];
-let tIdx=0;
+let trackIdx=0;
 function initMusic(){}
 function togglePlay(){
   playing=!playing;
-  const btn=document.getElementById('m-play');
-  if(btn)btn.innerHTML=`<i class="ti ti-player-${playing?'pause':'play'}-filled"></i>`;
-  if(playing)pInt=setInterval(()=>{pSec=(pSec+1)%totSec;updProg();},1000);
-  else clearInterval(pInt);
+  const btn=document.getElementById('play-btn');
+  if(btn) {
+    btn.innerHTML=icon(playing?'pause':'play','ui-icon fill');
+    btn.setAttribute('aria-label', playing ? 'Pause' : 'Play');
+  }
+  if(playing){ progInterval=setInterval(()=>{ progSec=(progSec+1)%totalSec; updateProg(); },1000); }
+  else { clearInterval(progInterval); }
 }
-function updProg(){
-  const f=document.getElementById('m-fill'),c=document.getElementById('m-cur');
-  if(f)f.style.width=(pSec/totSec*100)+'%';
-  if(c)c.textContent=Math.floor(pSec/60)+':'+String(pSec%60).padStart(2,'0');
+function updateProg(){
+  const fill=document.getElementById('prog-fill');
+  const cur=document.getElementById('prog-cur');
+  if(fill) fill.style.width=(progSec/totalSec*100)+'%';
+  if(cur) cur.textContent=Math.floor(progSec/60)+':'+String(progSec%60).padStart(2,'0');
 }
-function prevTrk(){tIdx=(tIdx-1+tracks.length)%tracks.length;setTrk();}
-function nextTrk(){tIdx=(tIdx+1)%tracks.length;setTrk();}
-function setTrk(){
-  const[t,a]=tracks[tIdx];
-  const tt=document.getElementById('m-title'),ta=document.getElementById('m-artist');
-  if(tt)tt.textContent=t;if(ta)ta.textContent=a;pSec=0;updProg();
+function prevTrack(){ trackIdx=(trackIdx-1+tracks.length)%tracks.length; setTrack(); }
+function nextTrack(){ trackIdx=(trackIdx+1)%tracks.length; setTrack(); }
+function setTrack(){
+  const [t,a]=tracks[trackIdx];
+  const tt=document.getElementById('music-title');
+  const ta=document.getElementById('music-artist');
+  if(tt) tt.textContent=t; if(ta) ta.textContent=a;
+  progSec=0; updateProg();
 }
 
-// Notifications
-function notify(msg,title='PhoneOS'){
-  const c=document.getElementById('notifs');
-  const n=document.createElement('div');n.className='notif';
-  n.innerHTML=`<div class="notif-title">${title}</div><div class="notif-msg">${msg}</div>`;
-  c.appendChild(n);
-  setTimeout(()=>{n.style.animation='nOut .3s ease forwards';setTimeout(()=>n.remove(),300);},3000);
+// â”€â”€ Drag â”€â”€
+function makeDraggable(win, handle) {
+  let sx,sy,ox,oy,dragging=false;
+  function start(cx,cy){ dragging=true; ox=cx; oy=cy; sx=win.offsetLeft; sy=win.offsetTop; }
+  function move(cx,cy){ if(!dragging)return; win.style.left=(sx+cx-ox)+'px'; win.style.top=(sy+cy-oy)+'px'; }
+  function end(){ dragging=false; }
+  handle.addEventListener('mousedown',e=>{ start(e.clientX,e.clientY); e.preventDefault(); });
+  document.addEventListener('mousemove',e=>move(e.clientX,e.clientY));
+  document.addEventListener('mouseup',end);
+  handle.addEventListener('touchstart',e=>{ const t=e.touches[0]; start(t.clientX,t.clientY); },{passive:true});
+  document.addEventListener('touchmove',e=>{ const t=e.touches[0]; move(t.clientX,t.clientY); },{passive:true});
+  document.addEventListener('touchend',end);
 }
-setTimeout(()=>notify('Welcome to PhoneOS 2.0! 👋'),800);
+
+// â”€â”€ Resize â”€â”€
+function makeResizable(win, handle) {
+  let sw,sh,sx,sy,resizing=false;
+  function start(cx,cy){ resizing=true; sw=win.offsetWidth; sh=win.offsetHeight; sx=cx; sy=cy; }
+  function move(cx,cy){ if(!resizing)return; win.style.width=Math.max(220,sw+cx-sx)+'px'; win.style.height=Math.max(160,sh+cy-sy)+'px'; }
+  function end(){ resizing=false; }
+  handle.addEventListener('mousedown',e=>{ start(e.clientX,e.clientY); e.preventDefault(); e.stopPropagation(); });
+  document.addEventListener('mousemove',e=>move(e.clientX,e.clientY));
+  document.addEventListener('mouseup',end);
+  handle.addEventListener('touchstart',e=>{ const t=e.touches[0]; start(t.clientX,t.clientY); e.stopPropagation(); },{passive:true});
+  document.addEventListener('touchmove',e=>{ const t=e.touches[0]; move(t.clientX,t.clientY); },{passive:true});
+  document.addEventListener('touchend',end);
+}
+
+// â”€â”€ Context Menu â”€â”€
+const ctxMenu = document.getElementById('ctx-menu');
+document.getElementById('desktop').addEventListener('contextmenu', e => {
+  e.preventDefault();
+  ctxMenu.style.display='block';
+  ctxMenu.style.left = Math.min(e.clientX, window.innerWidth-180)+'px';
+  ctxMenu.style.top = Math.min(e.clientY, window.innerHeight-200)+'px';
+  ctxMenu.innerHTML = `
+    <div class="ctx-item" onclick="notify('Refreshed!');hideCtx()">${icon('refresh')}Refresh Desktop</div>
+    <div class="ctx-sep"></div>
+    <div class="ctx-item" onclick="openApp('browser');hideCtx()">${icon('browser')}Open Browser</div>
+    <div class="ctx-item" onclick="openApp('terminal');hideCtx()">${icon('terminal')}Open Terminal</div>
+    <div class="ctx-item" onclick="openApp('notes');hideCtx()">${icon('notes')}New Note</div>
+    <div class="ctx-sep"></div>
+    <div class="ctx-item" onclick="openApp('settings');hideCtx()">${icon('settings')}Settings</div>
+  `;
+});
+document.addEventListener('click', hideCtx);
+function hideCtx(){ ctxMenu.style.display='none'; }
+
+// â”€â”€ Touch long press for context menu â”€â”€
+let longPress;
+document.getElementById('desktop').addEventListener('touchstart', e => {
+  longPress = setTimeout(() => {
+    const t = e.touches[0];
+    ctxMenu.style.display='block';
+    ctxMenu.style.left = Math.min(t.clientX, window.innerWidth-180)+'px';
+    ctxMenu.style.top = Math.min(t.clientY, window.innerHeight-200)+'px';
+    ctxMenu.innerHTML = `
+      <div class="ctx-item" onclick="notify('Refreshed!');hideCtx()">${icon('refresh')}Refresh Desktop</div>
+      <div class="ctx-sep"></div>
+      <div class="ctx-item" onclick="openApp('browser');hideCtx()">${icon('browser')}Open Browser</div>
+      <div class="ctx-item" onclick="openApp('terminal');hideCtx()">${icon('terminal')}Open Terminal</div>
+      <div class="ctx-sep"></div>
+      <div class="ctx-item" onclick="openApp('settings');hideCtx()">${icon('settings')}Settings</div>
+    `;
+  }, 500);
+}, {passive:true});
+document.getElementById('desktop').addEventListener('touchend', () => clearTimeout(longPress), {passive:true});
+
+// â”€â”€ Notifications â”€â”€
+function notify(msg, title='PhoneOS') {
+  const c = document.getElementById('notif-container');
+  const n = document.createElement('div');
+  n.className='notif';
+  n.innerHTML=`<div class="notif-title">${title}</div>${msg}`;
+  c.appendChild(n);
+  setTimeout(()=>{ n.style.animation='slideOut 0.3s ease forwards'; setTimeout(()=>n.remove(),300); },3000);
+}
+
+// Welcome
+setTimeout(()=>notify('Welcome to PhoneOS!','System'),600);
 </script>
 </body>
 </html>
+
